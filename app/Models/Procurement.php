@@ -17,6 +17,7 @@ class Procurement extends Model
         'order_date',
         'expected_delivery_date',
         'status',
+        'soap_receipt_number',
         'total_amount',
         'currency',
         'notes',

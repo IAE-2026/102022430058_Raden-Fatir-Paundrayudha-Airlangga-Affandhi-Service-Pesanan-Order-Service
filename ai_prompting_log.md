@@ -138,3 +138,24 @@
 
 11. **[15 Mei 2026, 21:50]**
     > "apakah pengerjaan tugas nya sudah sesuai ketentuan dan rubrik penilaian nya apakah sudah terpenuhi juga? kalau belum, daftarkan apa saja kekurangan dan evaluasi dari pengerjaan nya."
+
+12. **[12 Juni 2026, 13:35]**
+    > "gua mau ngerjain Tugas 3 IAE untuk Service B - Procurement dari awal. ketentuan nya adalah mengintegrasikan SSO Dosen (autentikasi JWT token), SOAP Audit untuk melacak transaksi kritis pembuatan PO ke sistem pusat, dan RabbitMQ untuk menyiarkan pesan ke service lain. tolong jelaskan analisis alur integrasi end-to-end, kebutuhan database, dan apa saja langkah pertama yang harus kita buat."
+
+13. **[12 Juni 2026, 14:15]**
+    > "oke, sekarang kita mulai implementasi foundation-nya. pertama, install library php-jwt untuk verifikasi token JWT. lalu buatkan SsoService di Laravel untuk mengambil JWKS (public key) dari SSO Dosen, memverifikasi token JWT, dan memetakan peran (role) dari token ke database lokal (misal: 'user' jadi peran 'warga', dan 'm2m' jadi peran 'm2m')."
+
+14. **[12 Juni 2026, 15:00]**
+    > "lanjut, buatkan SOAP Client Service untuk pelaporan transaksi kritis. ketika PO dibuat, sistem harus memanggil SSO untuk mendapatkan token M2M terlebih dahulu, lalu mengirim request XML SOAP ke `/soap/v1/audit` milik Dosen untuk mencatat detail PO. hasil dari SOAP audit berupa ReceiptNumber harus kita simpan di database lokal. buatkan kode PHP/Laravel untuk service ini."
+
+15. **[12 Juni 2026, 15:40]**
+    > "sekarang buatkan AmqpPublisherService. setelah PO berhasil disimpan dan dilaporkan lewat SOAP, kita harus mempublikasikan pesan JSON berisi detail PO ke RabbitMQ melalui HTTP Gateway `/api/v1/messages/publish`. Gunakan exchange 'iae.central.exchange' dan routing key 'procurement.created'."
+
+16. **[12 Juni 2026, 16:15]**
+    > "gua butuh migrasi database untuk mendukung struktur data baru ini. buatkan 3 file migrasi di Laravel: satu untuk membuat tabel 'roles', kedua untuk menambahkan 'role_id' ke tabel 'users', dan ketiga untuk menambahkan kolom 'soap_receipt_number' di tabel 'procurements'. update juga Model User, Role, dan Procurement agar relasinya terdefinisi dengan baik."
+
+17. **[12 Juni 2026, 16:50]**
+    > "sekarang buat middleware untuk autentikasi. middleware ini harus mendukung dua skema: API Key lama (X-IAE-KEY menggunakan NIM) dan Bearer Token SSO Dosen yang baru. Setelah itu, update ProcurementController bagian 'store' agar mengintegrasikan semua langkah: verifikasi token SSO user, simpan PO ke database lokal, kirim laporan ke SOAP Audit dengan token M2M, dapatkan receipt number, simpan receipt number ke PO, lalu publish detail PO ke RabbitMQ, dan kembalikan respons sukses berformat standar."
+
+18. **[12 Juni 2026, 17:35]**
+    > "sekarang buatkan Dockerfile dan update docker-compose.yml agar bisa berjalan di port 8001."

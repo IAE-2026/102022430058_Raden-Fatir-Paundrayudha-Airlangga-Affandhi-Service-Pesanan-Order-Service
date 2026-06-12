@@ -340,6 +340,24 @@ class ProcurementController extends Controller
             // Load items untuk response
             $procurement->load('items');
 
+            // --- INTEGRASI TUGAS 3: SOAP Audit & RabbitMQ Publish ---
+            try {
+                // 1. SOAP Audit (Selalu menggunakan M2M token untuk otorisasi sistem-ke-sistem)
+                $soapService = app(\App\Services\SoapClientService::class);
+                $receiptNumber = $soapService->auditTransaction('ProcurementCreated', $procurement->toArray());
+                if ($receiptNumber) {
+                    $procurement->update(['soap_receipt_number' => $receiptNumber]);
+                }
+
+                // 2. RabbitMQ Publish (Selalu menggunakan M2M token)
+                $rabbitmqService = app(\App\Services\AmqpPublisherService::class);
+                $rabbitmqService->publishEvent('procurement.created', $procurement->toArray());
+            } catch (\Exception $auditEx) {
+                // Log and ignore audit exceptions so it does not block the API response
+                \Illuminate\Support\Facades\Log::error('Tugas 3 Integrations Failed: ' . $auditEx->getMessage());
+            }
+            // --------------------------------------------------------
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Purchase Order created successfully',
