@@ -38,7 +38,7 @@ Service ini bertanggung jawab atas proses pengadaan komponen elektronik dari sup
    ```bash
    php artisan serve
    ```
-   Akses API Doc di: `http://localhost:8000/api/documentation`
+   Akses API Doc di: `http://localhost:8001/api/documentation`
 
 ---
 *Proyek ini dikembangkan sebagai bagian dari tugas Inter-App Engagement (IAE).*
