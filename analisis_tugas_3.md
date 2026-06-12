@@ -2,7 +2,9 @@
 **Service B – Procurement (Pengadaan Bahan Baku)**
 
 **Nama: Raden Fatir Paundrayudha Airlangga Affandi**
+
 **NIM: 102022430058**
+
 **Kelas: SI-48-09**
 
 ## 1. Transaksi Kritis: Pembuatan Purchase Order (PO)
